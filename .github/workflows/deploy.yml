@@ -1,0 +1,35 @@
+name: Deploy to Developer org
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: salesforce-dev
+    env:
+      SF_AUTH_URL: ${{ secrets.SF_AUTH_URL_DEV }}
+      SF_DISABLE_TELEMETRY: 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm test
+      - name: Require configured org secret
+        run: test -n "$SF_AUTH_URL"
+      - run: npm install --global @salesforce/cli@2.154.4
+      - name: Authorize
+        run: |
+          umask 077
+          printf '%s' "$SF_AUTH_URL" > "$RUNNER_TEMP/sf-auth.txt"
+          sf org login sfdx-url --sfdx-url-file "$RUNNER_TEMP/sf-auth.txt" --alias deploy-org
+          rm "$RUNNER_TEMP/sf-auth.txt"
+      - name: Deploy and run tests
+        run: >-
+          sf project deploy start --target-org deploy-org --source-dir force-app
+          --test-level RunSpecifiedTests --tests DiscountEngineTest --tests DiscountSubmitActionTest
+          --tests DealFlowQuoteControllerTest --tests DealFlowOrderTest --wait 30
+      - name: Logout
+        if: always()
+        run: sf org logout --target-org deploy-org --no-prompt || true

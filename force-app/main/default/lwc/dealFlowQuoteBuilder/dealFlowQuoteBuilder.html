@@ -1,0 +1,22 @@
+<template>
+    <lightning-card title="DealFlow · Quote builder" icon-name="standard:quotes">
+        <div class="slds-p-around_medium">
+            <template lwc:if={busy}><lightning-spinner alternative-text="Processing quote"></lightning-spinner></template>
+            <p class="slds-text-color_weak slds-m-bottom_medium">{revisionLabel} · Prices are verified on the server. Submitted versions cannot be edited.</p>
+            <lightning-input label="Customer" value={customer} onchange={customerChanged} required maxlength="120"></lightning-input>
+            <template for:each={lines} for:item="line">
+                <div key={line.key} class="line">
+                    <lightning-combobox label="Product" value={line.sku} options={productOptions} data-key={line.key} data-field="sku" onchange={lineChanged} required></lightning-combobox>
+                    <lightning-input label="Quantity" type="number" min="1" max="100000" step="1" value={line.quantity} data-key={line.key} data-field="quantity" onchange={lineChanged} required></lightning-input>
+                    <lightning-input label="Discount (%)" type="number" min="0" max="100" step="0.01" value={line.discount} data-key={line.key} data-field="discount" onchange={lineChanged} required></lightning-input>
+                    <lightning-button label="Remove" data-key={line.key} onclick={removeLine}></lightning-button>
+                </div>
+            </template>
+            <div class="slds-m-top_medium"><lightning-button label="Add product" onclick={addLine} disabled={busy}></lightning-button></div>
+            <div class="totals"><p>Gross: <lightning-formatted-number value={gross} format-style="currency" currency-code="INR"></lightning-formatted-number></p><p>Net: <lightning-formatted-number value={net} format-style="currency" currency-code="INR"></lightning-formatted-number></p></div>
+            <lightning-button label="Save new draft version" variant="brand" onclick={save} disabled={busy}></lightning-button>
+            <p class="slds-m-top_large slds-m-bottom_small">Your accessible quote versions · use Submit only on a Draft.</p>
+            <lightning-datatable key-field="Id" data={quotes} columns={columns} onrowaction={rowAction} hide-checkbox-column></lightning-datatable>
+        </div>
+    </lightning-card>
+</template>

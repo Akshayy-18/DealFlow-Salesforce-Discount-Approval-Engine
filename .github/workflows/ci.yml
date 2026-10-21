@@ -1,0 +1,60 @@
+name: DealFlow checks
+on:
+  push:
+    branches: [main, 'codex/**']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  local-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: npm test
+      - run: python tools/check_metadata.py
+      - run: python tools/generate_metadata.py
+      - run: python tools/build_standalone.py
+      - name: Generated files are current
+        run: git diff --exit-code -- force-app demo/standalone.html
+  salesforce-validation:
+    needs: local-checks
+    runs-on: ubuntu-latest
+    env:
+      SF_AUTH_URL: ${{ secrets.SF_AUTH_URL_DEV }}
+      SF_DISABLE_TELEMETRY: 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Report validation prerequisites
+        run: |
+          if [ -z "$SF_AUTH_URL" ]; then
+            echo 'Salesforce validation did not run: configure SF_AUTH_URL_DEV using a dedicated Developer org.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Install official Salesforce CLI
+        if: env.SF_AUTH_URL != ''
+        run: npm install --global @salesforce/cli@2.154.4
+      - name: Authorize validation org
+        if: env.SF_AUTH_URL != ''
+        run: |
+          umask 077
+          printf '%s' "$SF_AUTH_URL" > "$RUNNER_TEMP/sf-auth.txt"
+          sf org login sfdx-url --sfdx-url-file "$RUNNER_TEMP/sf-auth.txt" --alias ci-org
+          rm "$RUNNER_TEMP/sf-auth.txt"
+      - name: Validate metadata and Apex tests without deployment
+        if: env.SF_AUTH_URL != ''
+        run: >-
+          sf project deploy start --dry-run --target-org ci-org --source-dir force-app
+          --test-level RunSpecifiedTests --tests DiscountEngineTest --tests DiscountSubmitActionTest
+          --tests DealFlowQuoteControllerTest --tests DealFlowOrderTest --wait 30
+      - name: Remove local authorization
+        if: always() && env.SF_AUTH_URL != ''
+        run: sf org logout --target-org ci-org --no-prompt || true
