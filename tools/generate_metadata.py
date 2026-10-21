@@ -52,7 +52,7 @@ write('tabs/Discount_Request__c.tab-meta.xml',xml('CustomTab','<customObject>tru
 write('applications/DealFlow.app-meta.xml',xml('CustomApplication','<description>Configurable discount approval engine</description><formFactors>Large</formFactors><formFactors>Small</formFactors><label>DealFlow</label><navType>Standard</navType><tabs>Discount_Request__c</tabs><uiType>Lightning</uiType>'))
 fields=['Customer__c','Amount__c','Discount__c','Net_Amount__c','Status__c','Route__c','Applied_Rule__c','Approver__c']
 items=''.join(f'<layoutItems><behavior>{"Edit" if n in fields[:3] else "Readonly"}</behavior><field>{n}</field></layoutItems>' for n in fields)
-write('layouts/Discount_Request__c-DealFlow.layout-meta.xml',xml('Layout',f'<layoutSections><customLabel>false</customLabel><detailHeading>true</detailHeading><editHeading>true</editHeading><label>Information</label><layoutColumns>{items}</layoutColumns><style>OneColumn</style></layoutSections><relatedLists><relatedList>RelatedProcessInstanceList</relatedList></relatedLists><showEmailCheckbox>false</showEmailCheckbox><showHighlightsPanel>true</showHighlightsPanel><showInteractionLogPanel>false</showInteractionLogPanel><showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox><showSubmitAndAttachButton>false</showSubmitAndAttachButton>'))
+write('layouts/Discount_Request__c-DealFlow.layout-meta.xml',xml('Layout',f'<layoutSections><customLabel>false</customLabel><detailHeading>true</detailHeading><editHeading>true</editHeading><label>Information</label><layoutColumns>{items}</layoutColumns><style>OneColumn</style></layoutSections><showEmailCheckbox>false</showEmailCheckbox><showHighlightsPanel>true</showHighlightsPanel><showInteractionLogPanel>false</showInteractionLogPanel><showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox><showSubmitAndAttachButton>false</showSubmitAndAttachButton>'))
 permissions=''
 for name in ['DiscountEngine','DiscountSubmitAction']:
     permissions+=f'<classAccesses><apexClass>{name}</apexClass><enabled>true</enabled></classAccesses>'
@@ -120,6 +120,7 @@ for role,label in [('Sales_Rep','DealFlow Sales Rep'),('Manager','DealFlow Manag
         if object_name==dispatch and role!='Operations': continue
         for f in object_fields:
             if object_name==obj and f in ['Amount__c','Discount__c']:continue
+            if object_name==line and f=='Quote__c':continue
             body+=f'<fieldPermissions><editable>false</editable><field>{object_name}.{f}</field><readable>true</readable></fieldPermissions>'
         # Mutations are through a small Apex service with custom-permission and ownership checks.
         body+=f'<objectPermissions><allowCreate>false</allowCreate><allowDelete>false</allowDelete><allowEdit>false</allowEdit><allowRead>true</allowRead><modifyAllRecords>false</modifyAllRecords><object>{object_name}</object><viewAllRecords>{str(role=="Operations").lower()}</viewAllRecords></objectPermissions>'

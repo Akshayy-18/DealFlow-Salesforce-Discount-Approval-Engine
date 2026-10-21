@@ -13,7 +13,7 @@
     <interviewLabel>Submit Discount Request {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Submit Discount Request</label><processType>Flow</processType>
     <screens><name>Confirm</name><label>Submit discount request</label><locationX>176</locationX><locationY>134</locationY>
-        <allowBack>false</allowBack><allowFinish>false</allowFinish><allowPause>false</allowPause>
+        <allowBack>false</allowBack><allowFinish>true</allowFinish><allowPause>false</allowPause>
         <connector><targetReference>Submit_Request</targetReference></connector>
         <fields><name>Explanation</name><fieldText>&lt;p&gt;Submit this saved request for policy evaluation. Discounts up to 5% are automatically approved; higher discounts require review. Requests above 25% are blocked. Submitted requests cannot be edited.&lt;/p&gt;</fieldText><fieldType>DisplayText</fieldType></fields>
         <showFooter>true</showFooter><showHeader>true</showHeader>

@@ -17,7 +17,9 @@ private class DealFlowOrderTest {
     }
     private static Id approvedQuote(){
         DealFlowQuoteController.LineInput line=new DealFlowQuoteController.LineInput();line.sku='DF-START';line.quantity=1;line.discount=3;
-        Id id=DealFlowQuoteController.createQuote('API test',new List<DealFlowQuoteController.LineInput>{line},null);DealFlowQuoteController.submitQuote(id);return id;
+        Id id;
+        System.runAs(new User(Id=UserInfo.getUserId())){id=DealFlowQuoteController.createQuote('API test',new List<DealFlowQuoteController.LineInput>{line},null);DealFlowQuoteController.submitQuote(id);}
+        return id;
     }
     @IsTest static void successfulDispatchAndUniqueOutbox(){
         Test.setMock(HttpCalloutMock.class,new MockAPI(201,'{"orderId":"ORD-TEST"}'));
@@ -45,7 +47,7 @@ private class DealFlowOrderTest {
         Id quote=approvedQuote();Order_Dispatch__c dispatch=[SELECT Id,Payload__c,Quote_Key__c FROM Order_Dispatch__c WHERE Quote__c=:quote];
         dispatch.Status__c='Retryable';dispatch.Attempts__c=1;update dispatch;
         Test.setMock(HttpCalloutMock.class,new MockAPI(200,'{"orderId":"ORD-REPLAY"}'));
-        Test.startTest();DealFlowOrderService.retry(dispatch.Id);Test.stopTest();
+        Test.startTest();System.runAs(new User(Id=UserInfo.getUserId())){DealFlowOrderService.retry(dispatch.Id);}Test.stopTest();
         Order_Dispatch__c after=[SELECT Status__c,Payload__c,Quote_Key__c,External_Order_Id__c FROM Order_Dispatch__c WHERE Id=:dispatch.Id];
         System.assertEquals(dispatch.Payload__c,after.Payload__c);System.assertEquals(dispatch.Quote_Key__c,after.Quote_Key__c);System.assertEquals('Succeeded',after.Status__c);
     }

@@ -30,6 +30,8 @@ private class DealFlowQuoteControllerTest {
             System.assertEquals('Approved',quotes.get(first).Status__c);System.assertEquals('Synthetic Customer',quotes.get(first).Customer__c);
             System.assertEquals(24000,quotes.get(first).Amount__c);System.assertEquals('Draft',quotes.get(second).Status__c);
             System.assertEquals(2,quotes.get(second).Version__c);System.assertEquals(3,quotes.get(third).Version__c);System.assertEquals(first,quotes.get(second).Previous_Version__c);
+            Quote_Line__c snapshot=[SELECT Id,Quantity__c FROM Quote_Line__c WHERE Quote__c=:first LIMIT 1];snapshot.Quantity__c=99;
+            System.assertEquals(false,Database.update(snapshot,false).isSuccess(),'Quote line snapshots must be immutable.');
         }
     }
     @IsTest static void nativeManagerApprovalAndHistory(){
