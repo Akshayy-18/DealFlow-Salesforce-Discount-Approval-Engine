@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Submit_Request</name><label>Evaluate and Submit</label><locationX>176</locationX><locationY>254</locationY>
+        <actionName>DiscountSubmitAction</actionName><actionType>apex</actionType>
+        <connector><targetReference>Success</targetReference></connector>
+        <faultConnector><targetReference>Failure</targetReference></faultConnector>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters><name>requestId</name><value><elementReference>recordId</elementReference></value></inputParameters>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </actionCalls>
+    <apiVersion>65.0</apiVersion><environments>Default</environments>
+    <interviewLabel>Submit Discount Request {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Submit Discount Request</label><processType>Flow</processType>
+    <screens><name>Confirm</name><label>Submit discount request</label><locationX>176</locationX><locationY>134</locationY>
+        <allowBack>false</allowBack><allowFinish>true</allowFinish><allowPause>false</allowPause>
+        <connector><targetReference>Submit_Request</targetReference></connector>
+        <fields><name>Explanation</name><fieldText>&lt;p&gt;Submit this saved request for policy evaluation. Discounts up to 5% are automatically approved; higher discounts require review. Requests above 25% are blocked. Submitted requests cannot be edited.&lt;/p&gt;</fieldText><fieldType>DisplayText</fieldType></fields>
+        <showFooter>true</showFooter><showHeader>true</showHeader>
+    </screens>
+    <screens><name>Success</name><label>Request processed</label><locationX>176</locationX><locationY>374</locationY>
+        <allowBack>false</allowBack><allowFinish>true</allowFinish><allowPause>false</allowPause>
+        <fields><name>Result</name><fieldText>&lt;p&gt;{!Submit_Request.message}&lt;/p&gt;</fieldText><fieldType>DisplayText</fieldType></fields><showFooter>true</showFooter><showHeader>true</showHeader>
+    </screens>
+    <screens><name>Failure</name><label>Unable to submit</label><locationX>440</locationX><locationY>374</locationY>
+        <allowBack>false</allowBack><allowFinish>true</allowFinish><allowPause>false</allowPause>
+        <fields><name>Error</name><fieldText>&lt;p&gt;{!$Flow.FaultMessage}&lt;/p&gt;&lt;p&gt;Correct the request or ask your administrator to check the policy and manager hierarchy.&lt;/p&gt;</fieldText><fieldType>DisplayText</fieldType></fields><showFooter>true</showFooter><showHeader>true</showHeader>
+    </screens>
+    <start><locationX>50</locationX><locationY>0</locationY><connector><targetReference>Confirm</targetReference></connector></start>
+    <status>Active</status>
+    <variables><name>recordId</name><dataType>String</dataType><isCollection>false</isCollection><isInput>true</isInput><isOutput>false</isOutput></variables>
+</Flow>

@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata"><description>Configurable discount approval engine</description><formFactors>Large</formFactors><formFactors>Small</formFactors><label>DealFlow</label><navType>Standard</navType><tabs>Discount_Request__c</tabs><uiType>Lightning</uiType></CustomApplication>

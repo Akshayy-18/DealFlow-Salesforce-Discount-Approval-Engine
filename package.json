@@ -1,0 +1,14 @@
+{
+  "name": "dealflow-salesforce-discount-approval-engine",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Salesforce discount policies, native approvals, and a browser-only learning demo",
+  "scripts": {
+    "dev": "node tools/serve.mjs",
+    "test": "node --test demo/tests/*.test.mjs mock-api/*.test.mjs",
+    "mock-api": "node mock-api/server.mjs",
+    "check:metadata": "python tools/check_metadata.py"
+  },
+  "engines": { "node": ">=20" }
+}

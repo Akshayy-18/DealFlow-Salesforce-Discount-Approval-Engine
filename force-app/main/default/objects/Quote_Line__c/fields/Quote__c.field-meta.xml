@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata"><fullName>Quote__c</fullName><label>Quote</label><referenceTo>Discount_Request__c</referenceTo><relationshipLabel>Quote Lines</relationshipLabel><relationshipName>Quote_Lines</relationshipName><reparentableMasterDetail>false</reparentableMasterDetail><type>MasterDetail</type><writeRequiresMasterRead>false</writeRequiresMasterRead></CustomField>

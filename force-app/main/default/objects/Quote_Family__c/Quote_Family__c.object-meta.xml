@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><deploymentStatus>Deployed</deploymentStatus><label>Quote Family</label><nameField><displayFormat>DF-{00000}</displayFormat><label>Quote Family Number</label><type>AutoNumber</type></nameField><pluralLabel>Quote Familys</pluralLabel><sharingModel>Private</sharingModel></CustomObject>

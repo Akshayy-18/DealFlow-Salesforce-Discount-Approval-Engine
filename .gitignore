@@ -1,0 +1,13 @@
+.sf/
+.sfdx/
+node_modules/
+.env
+.env.*
+coverage/
+test-results/
+__pycache__/
+*.pyc
+.data/
+.tools/
+sf-auth.json
+*.log
