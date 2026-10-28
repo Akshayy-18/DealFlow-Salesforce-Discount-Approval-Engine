@@ -8,7 +8,14 @@
     "dev": "node tools/serve.mjs",
     "test": "node --test demo/tests/*.test.mjs mock-api/*.test.mjs",
     "mock-api": "node mock-api/server.mjs",
-    "check:metadata": "python tools/check_metadata.py"
+    "check:metadata": "python tools/check_metadata.py",
+    "test:worker": "node --test cloudflare/worker.test.mjs",
+    "deploy:worker": "wrangler deploy --config cloudflare/wrangler.jsonc"
   },
-  "engines": { "node": ">=20" }
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "wrangler": "^4.154.0"
+  }
 }

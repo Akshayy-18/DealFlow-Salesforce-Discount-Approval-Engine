@@ -11,3 +11,7 @@ __pycache__/
 .tools/
 sf-auth.json
 *.log
+/docs/*.md
+.wrangler/
+.dev.vars
+.dev.vars.*

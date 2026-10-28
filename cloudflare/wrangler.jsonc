@@ -1,0 +1,13 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "dealflow-order-api",
+  "main": "worker.mjs",
+  "compatibility_date": "2026-10-28",
+  "workers_dev": true,
+  "preview_urls": false,
+  "observability": { "enabled": false },
+  "durable_objects": {
+    "bindings": [{ "name": "ORDERS", "class_name": "OrderStore" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["OrderStore"] }]
+}
